@@ -16,10 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from core.views import redirect_to_original
+from core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('core.urls')),
-    path('<str:short_code>/', redirect_to_original, name='redirect'),
+    path('login/', views.login_page, name='login'),
+    path('register/', views.register_page, name='register'),
+    path('dashboard/', views.dashboard_page, name='dashboard'),
+    path('', views.dashboard_page, name='home'),
+    path('<str:short_code>/', views.redirect_to_original, name='redirect'),
 ]

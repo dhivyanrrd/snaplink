@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import ShortURL,ClickAnalytics
+from .models import ShortURL, ClickAnalytics
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -23,14 +23,14 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email']
 
 class ShortURLSerializer(serializers.ModelSerializer):
-    short_url= serializers.SerializerMethodField()
+    short_url = serializers.SerializerMethodField()
 
     class Meta:
-        model=ShortURL
-        fields=['id','original_url','short_code','short_url','created_at']
-        read_only_fields=['short_code','short_url']
+        model = ShortURL
+        fields = ['id', 'original_url', 'short_code', 'short_url', 'created_at']
+        read_only_fields = ['short_code', 'short_url']
 
-    def get_short_url(self,obj):
+    def get_short_url(self, obj):
         request = self.context.get('request')
         if request:
             return request.build_absolute_uri(f'/{obj.short_code}/')

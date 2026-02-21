@@ -1,12 +1,18 @@
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.http import HttpResponseNotFound
 from django.db.models import Count
+import user_agents
+from django.core.cache import cache
 from .serializers import RegisterSerializer, UserSerializer, ShortURLSerializer
 from .models import ShortURL, ClickAnalytics
-
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
@@ -52,8 +58,6 @@ class URLAnalyticsView(generics.RetrieveAPIView):
         })
 
 def redirect_to_original(request, short_code):
-    from django.core.cache import cache
-
     original_url = cache.get(f'url:{short_code}')
 
     if not original_url:
@@ -66,7 +70,6 @@ def redirect_to_original(request, short_code):
     else:
         url_obj = ShortURL.objects.get(short_code=short_code)
 
-    import user_agents
     ua_string = request.META.get('HTTP_USER_AGENT', '')
     if ua_string:
         ua = user_agents.parse(ua_string)
@@ -81,3 +84,14 @@ def redirect_to_original(request, short_code):
     )
 
     return redirect(original_url)
+
+
+
+def login_page(request):
+    return render(request, 'login.html')
+
+def register_page(request):
+    return render(request, 'register.html')
+
+def dashboard_page(request):
+    return render(request, 'dashboard.html')

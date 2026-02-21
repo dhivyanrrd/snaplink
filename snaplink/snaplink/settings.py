@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 Django settings for snaplink project.
 """
+"""
+Django settings for snaplink project.
+"""
 import os
 from pathlib import Path
 from datetime import timedelta
@@ -33,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'core',  # Your app
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -50,7 +53,7 @@ ROOT_URLCONF = 'snaplink.urls'
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': [],
+    'DIRS': [BASE_DIR / 'templates'],  # Add this line
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -60,10 +63,9 @@ TEMPLATES = [{
         ],
     },
 }]
-
 WSGI_APPLICATION = 'snaplink.wsgi.application'
 
-# Database - Using Docker environment variables
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -86,7 +88,7 @@ CACHES = {
     }
 }
 
-# REST Framework
+# REST Framework - SINGLE definition
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -114,3 +116,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CSRF settings for API
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False

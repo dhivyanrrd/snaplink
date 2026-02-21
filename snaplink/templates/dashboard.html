@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Welcome to Snaplink Dashboard</h2>
+<div class="form-group">
+    <label for="url">Enter URL to shorten:</label>
+    <input type="url" id="url" name="url" placeholder="https://example.com" required>
+</div>
+<button onclick="shortenUrl()">Shorten URL</button>
+
+<div id="result" style="margin-top: 20px; display: none;">
+    <h3>Your shortened URL:</h3>
+    <a href="#" id="shortUrl" target="_blank"></a>
+</div>
+
+<div class="link">
+    <a href="#" onclick="logout()">Logout</a>
+</div>
+
+<script>
+// Check if user is logged in
+const token = localStorage.getItem('access_token');
+if (!token) {
+    window.location.href = '/login/';
+}
+
+async function shortenUrl() {
+    const url = document.getElementById('url').value;
+    const resultDiv = document.getElementById('result');
+    const shortUrlLink = document.getElementById('shortUrl');
+    
+    try {
+        const response = await fetch('/api/auth/shorten/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                original_url: url
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            shortUrlLink.href = data.short_url;
+            shortUrlLink.textContent = data.short_url;
+            resultDiv.style.display = 'block';
+        } else {
+            alert('Failed to shorten URL');
+        }
+    } catch (error) {
+        alert('Network error');
+    }
+}
+
+function logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    window.location.href = '/login/';
+}
+</script>
+{% endblock %}
