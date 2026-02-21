@@ -1,5 +1,28 @@
-venv/ 
-__pycache__/ 
-*.pyc 
-.env 
-db.sqlite3 
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Database
+*.db
+*.sqlite3
+mysql_data/
+
+# IDE (your code editor)
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Windows specific
+Thumbs.db
+.DS_Store
+
+# Django
+staticfiles/
+media/
